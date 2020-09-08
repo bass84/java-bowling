@@ -21,7 +21,7 @@ public class NormalFrameTest {
 	public void createFrameTest() {
 		assertThatThrownBy(() -> NormalFrame.of(10))
 				.isInstanceOf(FrameException.class)
-				.hasMessage("일반 프레임의 프레임 번호는 9를 넘을 수 없습니다.");
+				.hasMessage("일반 프레임의 번호는 9를 넘을 수 없습니다.");
 	}
 
 	@ParameterizedTest
@@ -30,7 +30,7 @@ public class NormalFrameTest {
 		Frame frame = NormalFrame.of(1);
 		frame.reflect(pins);
 		assertThat(frame.finish()).isEqualTo(finish);
-		assertThat(frame.getKnockingDownPins()).containsExactly(knockingDownPins);
+		assertThat(frame.getKnockingDownPinsSigns()).containsExactly(knockingDownPins);
 	}
 
 	private static Stream<Arguments> reflectProvider() {
@@ -47,17 +47,17 @@ public class NormalFrameTest {
 		frame.reflect(Pins.of(5));
 		frame.reflect(pins);
 		assertThat(frame.finish()).isEqualTo(finish);
-		assertThat(frame.getKnockingDownPins()).containsExactly(knockingDownPins);
+		assertThat(frame.getKnockingDownPinsSigns()).containsExactly(knockingDownPins);
 	}
 
 	private static Stream<Arguments> secondReflectProvider() {
 		return Stream.of(
 				Arguments.arguments(Pins.of(5), true, new String[]{"5", "/"}),
 				Arguments.arguments(Pins.of(0), true, new String[]{"5", "-"}),
-				Arguments.arguments(Pins.of(1), true, new String[]{"5", "6"}),
-				Arguments.arguments(Pins.of(2), true, new String[]{"5", "7"}),
-				Arguments.arguments(Pins.of(3), true, new String[]{"5", "8"}),
-				Arguments.arguments(Pins.of(4), true, new String[]{"5", "9"})
+				Arguments.arguments(Pins.of(1), true, new String[]{"5", "1"}),
+				Arguments.arguments(Pins.of(2), true, new String[]{"5", "2"}),
+				Arguments.arguments(Pins.of(3), true, new String[]{"5", "3"}),
+				Arguments.arguments(Pins.of(4), true, new String[]{"5", "4"})
 						);
 	}
 }

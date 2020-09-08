@@ -24,7 +24,10 @@ public enum PitchingState {
 	STRIKE(2, "X") {
 		@Override
 		public PitchingState reflect(List<Pins> knockingDownPins) {
-			throw new PitchingStateException("스트라이크 이후에는 또 던질 수 없습니다.");
+			if (knockingDownPins.get(knockingDownPins.size() - 1).isAllKnockingDown()) {
+				return PitchingState.STRIKE;
+			}
+			return PitchingState.ON_GOING;
 		}
 
 		@Override
@@ -43,7 +46,7 @@ public enum PitchingState {
 			}
 
 			int totalKnockingDownPins = firstKnockingDownPins.addKnockingDownPins(secondKnockingDownPins);
-			return totalKnockingDownPins == SPARE_PIN_COUNT ? SPARE : MISS;
+			return totalKnockingDownPins == ALL_PIN_COUNT ? SPARE : MISS;
 		}
 
 		@Override
@@ -55,7 +58,10 @@ public enum PitchingState {
 	SPARE(1, "/") {
 		@Override
 		public PitchingState reflect(List<Pins> knockingDownPins) {
-			throw new PitchingStateException("해당 프레임에서는 더 던질 수 없습니다.");
+			if (knockingDownPins.get(knockingDownPins.size() - 1).isAllKnockingDown()) {
+				return PitchingState.STRIKE;
+			}
+			return PitchingState.ON_GOING;
 		}
 
 		@Override
@@ -88,7 +94,7 @@ public enum PitchingState {
 		}
 	};
 
-	private static final int SPARE_PIN_COUNT = 10;
+	private static final int ALL_PIN_COUNT = 10;
 
 	public abstract PitchingState reflect(List<Pins> knockingDownPins);
 
@@ -102,7 +108,7 @@ public enum PitchingState {
 	}
 
 	public String getKnockingDownPinsSign(Pins totalKnockingDownPinsToDate) {
-		return StringUtils.isEmpty(sign) ? sign : String.valueOf(totalKnockingDownPinsToDate.getKnockingDownPins());
+		return !StringUtils.isEmpty(sign) ? sign : String.valueOf(totalKnockingDownPinsToDate.getKnockingDownPins());
 	}
 
 	public boolean isStrike() {

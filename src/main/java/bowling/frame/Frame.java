@@ -10,5 +10,5 @@ public interface Frame {
 
 	boolean finish();
 
-	List<String> getKnockingDownPins();
+	List<String> getKnockingDownPinsSigns();
 }

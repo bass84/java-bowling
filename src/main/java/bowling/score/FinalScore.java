@@ -7,6 +7,7 @@ public class FinalScore implements Score {
 
 	private int score;
 	private final boolean lastPitching;
+	private boolean reflectToNextScore;
 
 	private FinalScore(Pins knockingDownPins, boolean lastPitching) {
 		this.score = knockingDownPins.getKnockingDownPins();
@@ -28,12 +29,33 @@ public class FinalScore implements Score {
 	}
 
 	@Override
-	public void reflectPreviousScore(Score previousScore) {
+	public boolean reflectPreviousScore(Score previousScore) {
+		if (!previousScore.reflectableNextScore()) {
+			return false;
+		}
+
 		this.score += previousScore.getScore();
+		previousScore.reflectToNextScore();
+		return true;
 	}
 
 	@Override
 	public boolean isDoneCalculates() {
 		return lastPitching;
+	}
+
+	@Override
+	public void reflectToNextScore() {
+		reflectToNextScore = true;
+	}
+
+	@Override
+	public boolean isLastPitchingOfCurrentFrame() {
+		return lastPitching;
+	}
+
+	@Override
+	public boolean reflectableNextScore() {
+		return reflectToNextScore == false;
 	}
 }

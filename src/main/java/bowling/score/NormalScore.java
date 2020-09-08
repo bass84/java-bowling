@@ -1,7 +1,9 @@
 package bowling.score;
 
+import java.util.Objects;
+
 import bowling.exception.BowlingScoreException;
-import bowling.score.status.PitchingResult;
+import bowling.pitching.status.PitchingResult;
 
 public class NormalScore implements Score {
 
@@ -36,11 +38,14 @@ public class NormalScore implements Score {
 	}
 
 	@Override
-	public void reflectPreviousScore(Score previousScore) {
-		if (previousScore.getNextPitchingCountToReflect() > 0) {
-			throw new BowlingScoreException("아직 이전 프레임의 점수 계산이 끝나지 않았습니다.");
+	public boolean reflectPreviousScore(Score previousScore) {
+		if (!previousScore.reflectableNextScore()) {
+			return false;
 		}
+
 		this.score += previousScore.getScore();
+		previousScore.reflectToNextScore();
+		return true;
 	}
 
 	private void minusNextPitchingCountToReflect() {
@@ -60,5 +65,39 @@ public class NormalScore implements Score {
 	@Override
 	public boolean isDoneCalculates() {
 		return pitchingResult.canMoveNextFrame() && nextPitchingCountToReflect == 0;
+	}
+
+	@Override
+	public void reflectToNextScore() {
+		pitchingResult.reflectToNextScore();
+	}
+
+	@Override
+	public boolean isLastPitchingOfCurrentFrame() {
+		return pitchingResult.isLastPitchingOfCurrentFrame();
+	}
+
+	@Override
+	public boolean reflectableNextScore() {
+		return nextPitchingCountToReflect == 0 && !pitchingResult.alreadyReflectToNextScore();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		NormalScore that = (NormalScore) o;
+		return score == that.score &&
+			   nextPitchingCountToReflect == that.nextPitchingCountToReflect &&
+			   Objects.equals(pitchingResult, that.pitchingResult);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(score, nextPitchingCountToReflect, pitchingResult);
 	}
 }

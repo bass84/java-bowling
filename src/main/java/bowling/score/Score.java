@@ -9,11 +9,17 @@ public interface Score {
 
 	void addAdditionalScore(Score nextScore);
 
-	void reflectPreviousScore(Score previousScore);
+	boolean reflectPreviousScore(Score previousScore);
 
 	default boolean isItTimeToReflectNextScores(int advancedPitchingCount) {
 		return false;
 	}
 
 	boolean isDoneCalculates();
+
+	void reflectToNextScore();
+
+	boolean isLastPitchingOfCurrentFrame();
+
+	boolean reflectableNextScore();
 }

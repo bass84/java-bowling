@@ -14,19 +14,34 @@ public class Scores {
 		return new Scores();
 	}
 
-	public Scores calculateScore(Score score) {
+	public void calculateScore(Score score) {
 		add(score);
-		return execute();
+		execute();
 	}
 
-	private Scores execute() {
-		Scores finalScores = newInstance();
+	private void execute() {
+		List<Score> removeScores = new ArrayList<>();
+		addAdditionalNextScores();
+		reflectPreviousScore(removeScores);
+		removeUnnecessaryScores(removeScores);
+	}
+
+	private void addAdditionalNextScores() {
 		for (int i = 0; i < scores.size(); i++) {
 			this.addAdditionalNextScores(i);
-			this.reflectPreviousScore(i);
-			this.addIntoFinalScores(i, finalScores);
 		}
-		return finalScores;
+	}
+
+	private void reflectPreviousScore(List<Score> removeScores) {
+		for (int i = 0; i < scores.size(); i++) {
+			this.reflectPreviousScore(i, removeScores);
+		}
+	}
+
+	private void removeUnnecessaryScores(List<Score> removeScores) {
+		for (Score removeScore : removeScores) {
+			scores.remove(removeScore);
+		}
 	}
 
 	private void add(Score score) {
@@ -40,8 +55,9 @@ public class Scores {
 
 		Score score = scores.get(index);
 		int nextScoreIndex = index + 1;
+		int currentPitchingCount = nextScoreIndex + score.getNextPitchingCountToReflect();
 
-		for (int i = nextScoreIndex; i < nextScoreIndex + score.getNextPitchingCountToReflect(); i++) {
+		for (int i = nextScoreIndex; i < currentPitchingCount; i++) {
 			score.addAdditionalScore(scores.get(i));
 		}
 	}
@@ -54,20 +70,21 @@ public class Scores {
 		return currentScore.isItTimeToReflectNextScores(advancedPitchCount);
 	}
 
-	private void reflectPreviousScore(int index) {
+	private void reflectPreviousScore(int index, List<Score> removeScores) {
 		if (index == 0) {
 			return;
 		}
 
-		Score previousScore = scores.get(index - 1);
 		Score currentScore = scores.get(index);
-		currentScore.reflectPreviousScore(previousScore);
+		Score previousScore = scores.get(index - 1);
+		boolean reflectPreviousScore = currentScore.reflectPreviousScore(previousScore);
+
+		if (reflectPreviousScore && !previousScore.isLastPitchingOfCurrentFrame()) {
+			removeScores.add(previousScore);
+		}
 	}
 
-	private void addIntoFinalScores(int index, Scores finalScores) {
-		Score score = scores.get(index);
-		if (score.isDoneCalculates()) {
-			finalScores.add(score);
-		}
+	public List<Score> getScores() {
+		return scores;
 	}
 }

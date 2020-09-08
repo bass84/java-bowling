@@ -3,10 +3,10 @@ package bowling.frame;
 import java.util.List;
 
 import bowling.pin.Pins;
+import bowling.pitching.PitchingResults;
+import bowling.pitching.status.PitchingResult;
 import bowling.score.FinalScore;
-import bowling.score.PitchingResults;
 import bowling.score.Score;
-import bowling.score.status.PitchingResult;
 
 public class FinalFrame implements Frame {
 
@@ -44,8 +44,8 @@ public class FinalFrame implements Frame {
 	}
 
 	@Override
-	public List<String> getKnockingDownPins() {
-		return pitchingResults.getKnockingDownPins();
+	public List<String> getKnockingDownPinsSigns() {
+		return pitchingResults.getKnockingDownPinsSigns();
 	}
 
 }

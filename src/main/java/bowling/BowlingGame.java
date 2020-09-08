@@ -1,5 +1,6 @@
 package bowling;
 
+import bowling.frame.Frames;
 import bowling.pin.Pins;
 import bowling.score.ScoringBoard;
 import bowling.user.Player;
@@ -12,7 +13,7 @@ public class BowlingGame {
 		this.scoringBoard = scoringBoard;
 	}
 
-	public BowlingGame init(Player player) {
+	public static BowlingGame init(Player player) {
 		return new BowlingGame(ScoringBoard.of(player));
 	}
 
@@ -20,8 +21,12 @@ public class BowlingGame {
 		return scoringBoard.isEnd();
 	}
 
-	public void pitchBall(Pins pins) {
-		scoringBoard.reflect(pins);
+	public Frames pitchBall(Pins pins) {
+		return scoringBoard.reflect(pins);
+	}
+
+	public int getCurrentFrameNo() {
+		return scoringBoard.getCurrentFrameNo();
 	}
 
 }

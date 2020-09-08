@@ -75,8 +75,6 @@ public class PitchingStateTest {
 	private static Stream<Arguments> pitchingStateExceptionProvider() {
 		return Stream.of(
 				Arguments.arguments(PitchingState.GUTTER, "해당 프레임에서는 더 던질 수 없습니다."),
-				Arguments.arguments(PitchingState.STRIKE, "스트라이크 이후에는 또 던질 수 없습니다."),
-				Arguments.arguments(PitchingState.SPARE, "해당 프레임에서는 더 던질 수 없습니다."),
 				Arguments.arguments(PitchingState.MISS, "해당 프레임에서는 더 던질 수 없습니다.")
 						);
 	}

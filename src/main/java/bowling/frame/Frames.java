@@ -35,13 +35,28 @@ public class Frames {
 		return currentFrameIndex == FRAMES_COUNT;
 	}
 
-	public void reflect(Pins pins) {
+	public Frames reflect(Pins pins) {
 		Frame currentFrame = frames.get(currentFrameIndex);
 		Score score = currentFrame.reflect(pins);
-		scores.calculateScore(score);
+		this.scores.calculateScore(score);
 
 		if (currentFrame.finish()) {
 			currentFrameIndex++;
 		}
+
+		return this;
 	}
+
+	public int getCurrentFrameNo() {
+		return currentFrameIndex + 1;
+	}
+
+	public List<String> getKnockingDownPinsSignsOf(int frameIndex) {
+		return frames.get(frameIndex).getKnockingDownPinsSigns();
+	}
+
+	public List<Score> getScoresToDate() {
+		return scores.getScores();
+	}
+
 }

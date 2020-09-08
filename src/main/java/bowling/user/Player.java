@@ -11,4 +11,8 @@ public class Player {
 	public static Player of(String name) {
 		return new Player(name);
 	}
+
+	public String getName() {
+		return name;
+	}
 }

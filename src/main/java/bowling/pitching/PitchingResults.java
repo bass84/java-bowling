@@ -1,4 +1,4 @@
-package bowling.score;
+package bowling.pitching;
 
 import static java.util.stream.Collectors.toList;
 
@@ -9,8 +9,7 @@ import java.util.stream.IntStream;
 import org.springframework.util.CollectionUtils;
 
 import bowling.pin.Pins;
-import bowling.pitching.PitchingState;
-import bowling.score.status.PitchingResult;
+import bowling.pitching.status.PitchingResult;
 
 public class PitchingResults {
 
@@ -37,7 +36,7 @@ public class PitchingResults {
 		return getLastPitchingState().reflect(allKnockingDownPinsToDate);
 	}
 
-	public List<Pins> getAllKnockingDownPinsToDate(Pins knockingDownPins) {
+	private List<Pins> getAllKnockingDownPinsToDate(Pins knockingDownPins) {
 		List<Pins> allKnockingDownPins = getAllKnockingDownPins();
 		allKnockingDownPins.add(knockingDownPins);
 
@@ -61,25 +60,36 @@ public class PitchingResults {
 							  .getPitchingState();
 	}
 
-	public List<String> getKnockingDownPins() {
-		return IntStream.range(0, pitchingResults.size())
-						.mapToObj(i -> {
-							PitchingState pitchingState = pitchingResults.get(i).getPitchingState();
-							return pitchingState.getKnockingDownPinsSign(getTotalKnockingDownPinsOfFrame(i + 1));
-						})
-						.collect(toList());
+	public List<String> getKnockingDownPinsSigns() {
+		List<String> result = IntStream.range(0, pitchingResults.size())
+									   .mapToObj(i -> getPitchingStateOf(i).getKnockingDownPinsSign(getKnockingDownPinsForSign(i + 1)))
+									   .collect(toList());
+		return result;
 	}
 
-	private Pins getTotalKnockingDownPinsOfFrame(int size) {
+	private Pins getKnockingDownPinsForSign(int size) {
 		if (CollectionUtils.isEmpty(pitchingResults)) {
 			return Pins.of(0);
 		}
-		return Pins.of(IntStream.range(0, size)
-								.map(i -> pitchingResults.get(i).getKnockingDownPins())
-								.sum());
+		int allKnockingDownPins = IntStream.range(0, size)
+										   .map(i -> pitchingResults.get(i).getKnockingDownPins())
+										   .sum();
+		if (allKnockingDownPins < 10) {
+			return Pins.of(pitchingResults.get(size - 1).getKnockingDownPins());
+		}
+
+		if (allKnockingDownPins > 10) {
+			allKnockingDownPins = 10 % allKnockingDownPins;
+		}
+		return Pins.of(allKnockingDownPins);
 	}
 
-	public boolean canMoveNextFrame() {
+	private PitchingState getPitchingStateOf(int index) {
+		return pitchingResults.get(index)
+							  .getPitchingState();
+	}
+
+	public boolean isDonePitchingOfCurrentFrame() {
 		return getLastPitchingState().canMoveNextFrame();
 	}
 

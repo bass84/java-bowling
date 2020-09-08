@@ -22,7 +22,11 @@ public class ScoringBoard {
 		return frames.isEnd();
 	}
 
-	public void reflect(Pins pins) {
-		frames.reflect(pins);
+	public Frames reflect(Pins pins) {
+		return frames.reflect(pins);
+	}
+
+	public int getCurrentFrameNo() {
+		return frames.getCurrentFrameNo();
 	}
 }
