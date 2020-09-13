@@ -1,36 +1,39 @@
 package bowling;
 
+import java.util.List;
+
 import bowling.frame.Frames;
 import bowling.pin.Pins;
-import bowling.score.ScoringBoard;
+import bowling.score.ScoringBoards;
 import bowling.user.Player;
+import bowling.user.Players;
 
 public class BowlingGame {
 
-	private final ScoringBoard scoringBoard;
+	private final ScoringBoards scoringBoards;
 
-	private BowlingGame(ScoringBoard scoringBoard) {
-		this.scoringBoard = scoringBoard;
+	private BowlingGame(ScoringBoards scoringBoards) {
+		this.scoringBoards = scoringBoards;
 	}
 
-	public static BowlingGame init(Player player) {
-		return new BowlingGame(ScoringBoard.of(player));
+	public static BowlingGame init(Players players) {
+		return new BowlingGame(ScoringBoards.of(players));
 	}
 
 	public boolean isEndGame() {
-		return scoringBoard.isEnd();
+		return scoringBoards.isEnd();
 	}
 
-	public Frames pitchBall(Pins pins) {
-		return scoringBoard.reflect(pins);
+	public List<Frames> pitchBall(Pins pins) {
+		return scoringBoards.reflect(pins);
 	}
 
-	public int getCurrentFrameNo() {
-		return scoringBoard.getCurrentFrameNo();
-	}
+	/*public int getCurrentFrameNo() {
+		return scoringBoards.getCurrentFrameNo();
+	}*/
 
-	public Player getPlayer() {
-		return scoringBoard.getPlayer();
+	public Player getCurrentPlayer() {
+		return scoringBoards.getCurrentPlayer();
 	}
 
 }
