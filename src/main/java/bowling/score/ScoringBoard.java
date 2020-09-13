@@ -33,4 +33,12 @@ public class ScoringBoard {
 	public Player getPlayer() {
 		return player;
 	}
+
+	public Frames getFrames() {
+		return frames;
+	}
+
+	public boolean finishCurrentFrame() {
+		return frames.finishCurrentFrame();
+	}
 }
